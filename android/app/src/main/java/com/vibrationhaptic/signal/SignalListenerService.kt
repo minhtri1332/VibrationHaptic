@@ -119,25 +119,45 @@ class SignalListenerService : Service() {
   }
 
   private fun vibratePulses(pulses: Int) {
+    val prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+    val durationMs = prefs.getLong(KEY_DURATION_MS, DEFAULT_DURATION_MS).coerceIn(300L, 500L)
+    val amplitude = prefs.getInt(KEY_AMPLITUDE, DEFAULT_AMPLITUDE).coerceIn(100, 255)
+
     // Waveform alternates off/on: [0, on, gap, on, gap, on, ...].
     val timings = LongArray(pulses * 2) { i ->
       when {
         i == 0 -> 0L
         i % 2 == 0 -> GAP_MS
-        else -> PULSE_MS
+        else -> durationMs
       }
     }
+    val amplitudes = IntArray(timings.size) { i ->
+      if (i == 0 || i % 2 == 0) 0 else amplitude
+    }
+
     val vibrator = vibrator()
     vibrator.cancel()
     when {
-      Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU ->
+      Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+        val effect = if (vibrator.hasAmplitudeControl()) {
+          VibrationEffect.createWaveform(timings, amplitudes, -1)
+        } else {
+          VibrationEffect.createWaveform(timings, -1)
+        }
         vibrator.vibrate(
-          VibrationEffect.createWaveform(timings, -1),
+          effect,
           VibrationAttributes.createForUsage(VibrationAttributes.USAGE_ALARM),
         )
-      Build.VERSION.SDK_INT >= Build.VERSION_CODES.O ->
+      }
+      Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
+        val effect = if (vibrator.hasAmplitudeControl()) {
+          VibrationEffect.createWaveform(timings, amplitudes, -1)
+        } else {
+          VibrationEffect.createWaveform(timings, -1)
+        }
         @Suppress("DEPRECATION")
-        vibrator.vibrate(VibrationEffect.createWaveform(timings, -1), alarmAudioAttributes())
+        vibrator.vibrate(effect, alarmAudioAttributes())
+      }
       else -> @Suppress("DEPRECATION") vibrator.vibrate(timings, -1, alarmAudioAttributes())
     }
   }
@@ -213,9 +233,20 @@ class SignalListenerService : Service() {
     private const val ACTION_STOP = "com.vibrationhaptic.signal.STOP"
     private const val EXTRA_DEVICE_ID = "deviceId"
     private const val PREFS = "signal_listener"
-    private const val PULSE_MS = 300L
-    private const val GAP_MS = 400L
+    const val KEY_DURATION_MS = "vibration_duration_ms"
+    const val KEY_AMPLITUDE = "vibration_amplitude"
+    const val DEFAULT_DURATION_MS = 400L
+    const val DEFAULT_AMPLITUDE = 255
+    private const val GAP_MS = 300L
     private val LETTERS = listOf("A", "B", "C", "D")
+
+    fun saveSettings(context: Context, durationMs: Long, amplitude: Int) {
+      val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+      prefs.edit()
+        .putLong(KEY_DURATION_MS, durationMs.coerceIn(300L, 500L))
+        .putInt(KEY_AMPLITUDE, amplitude.coerceIn(100, 255))
+        .apply()
+    }
 
     fun start(context: Context, deviceId: String) {
       androidx.core.content.ContextCompat.startForegroundService(

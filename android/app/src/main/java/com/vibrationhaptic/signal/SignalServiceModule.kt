@@ -13,4 +13,8 @@ class SignalServiceModule(reactContext: ReactApplicationContext) :
   override fun stop() {
     SignalListenerService.stop(reactApplicationContext)
   }
+
+  override fun setVibrationSettings(durationMs: Double, amplitude: Double) {
+    SignalListenerService.saveSettings(reactApplicationContext, durationMs.toLong(), amplitude.toInt())
+  }
 }

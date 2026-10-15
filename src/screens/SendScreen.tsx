@@ -33,7 +33,7 @@ export function SendScreen({ device, onBack }: Props) {
 
   return (
     <View>
-      <Header title={device.name} onBack={onBack} />
+      <Header title={"Gửi tới: " + device.name} onBack={onBack} />
       <Text
         testID="send-status"
         style={[

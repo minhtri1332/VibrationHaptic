@@ -8,6 +8,7 @@ import { TurboModuleRegistry } from 'react-native';
 export interface Spec extends TurboModule {
   start(deviceId: string): void;
   stop(): void;
+  setVibrationSettings(durationMs: number, amplitude: number): void;
 }
 
 export default TurboModuleRegistry.get<Spec>('SignalService');

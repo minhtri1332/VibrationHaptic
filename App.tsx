@@ -13,6 +13,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -51,9 +52,13 @@ function App() {
   );
 }
 
+const GRADIENT_LIGHT = ['#e8f0fe', '#d4e4fc', '#e0d7f8'];
+const GRADIENT_DARK = ['#0a0a1a', '#111233', '#1a0e2e'];
+
 function AppContent() {
   const safeAreaInsets = useSafeAreaInsets();
   const theme = useTheme();
+  const isDark = useColorScheme() === 'dark';
   const [screen, setScreen] = useState<Screen>(HOME);
   const [formVisible, setFormVisible] = useState(false);
   const goBack = () => setScreen(parentOf(screen));
@@ -72,8 +77,17 @@ function AppContent() {
     return () => subscription.remove();
   }, [screen]);
 
+  const rootProps =
+  {
+    colors: isDark ? GRADIENT_DARK : GRADIENT_LIGHT,
+    start: { x: 0, y: 0 },
+    end: { x: 1, y: 1 },
+    style: styles.root,
+  }
+
+
   return (
-    <View style={[styles.root, { backgroundColor: theme.background }]}>
+    <LinearGradient {...rootProps}>
       <ScrollView
         style={styles.container}
         contentContainerStyle={{
@@ -116,7 +130,7 @@ function AppContent() {
         visible={formVisible}
         onClose={() => setFormVisible(false)}
       />
-    </View>
+    </LinearGradient>
   );
 }
 
