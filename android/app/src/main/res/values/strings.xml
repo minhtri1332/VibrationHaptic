@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">VibrationHaptic</string>
+    <string name="signal_channel_name">Nhận tín hiệu</string>
+    <string name="signal_notification_title">Đang nhận tín hiệu rung</string>
+    <string name="signal_notification_waiting">Đang chờ tín hiệu…</string>
+    <string name="signal_notification_received">Tín hiệu cuối: %1$s (rung %2$d lần)</string>
+    <string name="signal_notification_stop">Dừng</string>
+</resources>

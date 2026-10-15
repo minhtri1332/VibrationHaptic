@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "280270446282",
+    "firebase_url": "https://vibrationhaptic-af479-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "vibrationhaptic-af479",
+    "storage_bucket": "vibrationhaptic-af479.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:280270446282:android:de6b672595432df72ade33",
+        "android_client_info": {
+          "package_name": "com.vibrationhaptic"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_KtJpQkJtga4xUJZN47wogYMJ9RS6eLo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
