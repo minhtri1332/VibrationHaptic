@@ -31,7 +31,7 @@ export function HomeScreen({ onSend, onReceive, onEdit }: Props) {
       <FeatureCard
         testID="card-send"
         title="Truyền tín hiệu"
-        description="Chọn thiết bị rồi gửi A, B, C hoặc D"
+        description="Chọn thiết bị rồi gửi 1, 2, 3 hoặc 4"
         color={SEND_COLOR}
         onPress={onSend}
       />

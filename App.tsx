@@ -1,5 +1,5 @@
 /**
- * Vibration signal: send A–D to Firebase, receive and vibrate.
+ * Vibration signal: send 1–4 to Firebase, receive and vibrate.
  *
  * @format
  */

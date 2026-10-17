@@ -8,7 +8,7 @@ import {
 } from '@react-native-firebase/database';
 import NativeSignalService from '../specs/NativeSignalService';
 
-export const LETTERS = ['A', 'B', 'C', 'D'] as const;
+export const LETTERS = ['1', '2', '3', '4'] as const;
 export type Letter = (typeof LETTERS)[number];
 
 export type Signal = { letter: Letter; at: number };
@@ -17,11 +17,16 @@ export type Signal = { letter: Letter; at: number };
 export const signalRefFor = (deviceId: string) =>
   ref(getDatabase(), `signals/${deviceId}`);
 
-// A = 1 pulse, B = 2, C = 3, D = 4.
-export const pulseCount = (letter: Letter) => LETTERS.indexOf(letter) + 1;
+// 1 = 1 pulse, 2 = 2, 3 = 3, 4 = 4.
+export const pulseCount = (letter: Letter) => {
+  const index = LETTERS.indexOf(letter);
+  if (index !== -1) return index + 1;
+  const legacy: Record<string, number> = { A: 1, B: 2, C: 3, D: 4 };
+  return legacy[letter as string] || 1;
+};
 
 export const isLetter = (value: unknown): value is Letter =>
-  LETTERS.includes(value as Letter);
+  LETTERS.includes(value as Letter) || ['A', 'B', 'C', 'D'].includes(value as string);
 
 export function sendSignal(deviceId: string, letter: Letter) {
   // serverTimestamp makes every write a new value, so repeating a letter still fires.
@@ -29,7 +34,7 @@ export function sendSignal(deviceId: string, letter: Letter) {
 }
 
 export const MIN_DURATION_MS = 300;
-export const MAX_DURATION_MS = 500;
+export const MAX_DURATION_MS = 1000;
 export const DEFAULT_DURATION_MS = 400;
 
 export const MIN_AMPLITUDE = 100;

@@ -250,7 +250,7 @@ $$('.signal-btn').forEach((btn) => {
   btn.addEventListener('click', async () => {
     if (!currentDevice) return;
     const letter = btn.dataset.letter;
-    const pulses = { A: 1, B: 2, C: 3, D: 4 }[letter];
+    const pulses = { '1': 1, '2': 2, '3': 3, '4': 4, A: 1, B: 2, C: 3, D: 4 }[letter];
 
     // Visual feedback
     btn.classList.add('sending');

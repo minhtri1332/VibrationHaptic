@@ -28,7 +28,7 @@ import com.vibrationhaptic.R
 
 /**
  * Foreground service that listens to `/signals/{deviceId}` in Realtime Database and vibrates
- * A = 1 ... D = 4 pulses. Lives outside the JS runtime so it keeps working while
+ * 1 = 1 ... 4 = 4 pulses. Lives outside the JS runtime so it keeps working while
  * the app is in the background, and vibrates as an alarm so silent mode does not
  * mute it.
  */
@@ -104,8 +104,14 @@ class SignalListenerService : Service() {
         return
       }
       val letter = snapshot.child("letter").getValue(String::class.java) ?: return
-      val pulses = LETTERS.indexOf(letter) + 1
-      if (pulses == 0) return
+      val pulses = when (letter) {
+        "1", "A" -> 1
+        "2", "B" -> 2
+        "3", "C" -> 3
+        "4", "D" -> 4
+        else -> LETTERS.indexOf(letter) + 1
+      }
+      if (pulses <= 0) return
       vibratePulses(pulses)
       notificationManager().notify(
         NOTIFICATION_ID,
@@ -120,7 +126,7 @@ class SignalListenerService : Service() {
 
   private fun vibratePulses(pulses: Int) {
     val prefs = getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-    val durationMs = prefs.getLong(KEY_DURATION_MS, DEFAULT_DURATION_MS).coerceIn(300L, 500L)
+    val durationMs = prefs.getLong(KEY_DURATION_MS, DEFAULT_DURATION_MS).coerceIn(300L, 1000L)
     val amplitude = prefs.getInt(KEY_AMPLITUDE, DEFAULT_AMPLITUDE).coerceIn(100, 255)
 
     // Waveform alternates off/on: [0, on, gap, on, gap, on, ...].
@@ -238,12 +244,12 @@ class SignalListenerService : Service() {
     const val DEFAULT_DURATION_MS = 400L
     const val DEFAULT_AMPLITUDE = 255
     private const val GAP_MS = 300L
-    private val LETTERS = listOf("A", "B", "C", "D")
+    private val LETTERS = listOf("1", "2", "3", "4")
 
     fun saveSettings(context: Context, durationMs: Long, amplitude: Int) {
       val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
       prefs.edit()
-        .putLong(KEY_DURATION_MS, durationMs.coerceIn(300L, 500L))
+        .putLong(KEY_DURATION_MS, durationMs.coerceIn(300L, 1000L))
         .putInt(KEY_AMPLITUDE, amplitude.coerceIn(100, 255))
         .apply()
     }

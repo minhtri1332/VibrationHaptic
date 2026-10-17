@@ -111,7 +111,7 @@ export function ReceiveScreen({ onBack }: Props) {
         </Text>
       )}
       <Text style={[styles.hint, { color: theme.muted }]}>
-        A = 1 lần · B = 2 lần · C = 3 lần · D = 4 lần
+        1 = 1 lần · 2 = 2 lần · 3 = 3 lần · 4 = 4 lần
       </Text>
       {Platform.OS === 'android' && (
         <Text style={[styles.hint, { color: theme.muted }]}>
